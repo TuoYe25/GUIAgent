@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+  <title>Edge GUI Agent Demo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Control Panel -->
+  <div id="control-panel">
+    <header>
+      <h1>Edge GUI Agent</h1>
+      <span class="subtitle">Sandbox Demo</span>
+    </header>
+
+    <!-- URL Bar -->
+    <section class="panel-section">
+      <label for="target-url">Target URL</label>
+      <div class="url-bar">
+        <input id="target-url" type="text" value="https://example.com" placeholder="Enter URL...">
+        <button id="btn-navigate" title="Navigate">Go</button>
+      </div>
+    </section>
+
+    <!-- Agent Control -->
+    <section class="panel-section">
+      <label for="agent-prompt">Agent Prompt</label>
+      <textarea id="agent-prompt" rows="3" placeholder="e.g., 'Search for latest AI news on the page and click the first result'">Click the "More information..." link on the page</textarea>
+    </section>
+
+    <!-- Model / Parser Selection -->
+    <section class="panel-section">
+      <label for="model-select">Model / Parser</label>
+      <select id="model-select">
+        <option value="text-llm">LLM (DeepSeek v4)</option>
+        <option value="vlm">VLM (Vision)</option>
+        <option value="regex">Regex Parser (offline)</option>
+      </select>
+    </section>
+
+    <!-- Agent Control buttons -->
+    <section class="panel-section">
+      <div class="button-row">
+        <button id="btn-run" class="primary">Run Agent</button>
+        <button id="btn-stop" disabled>Stop</button>
+        <button id="btn-reload-sandbox">Reload Page</button>
+      </div>
+    </section>
+
+    <!-- Workflows -->
+    <section class="panel-section">
+      <label>Sample Workflows</label>
+      <select id="workflow-select">
+        <option value="">-- Select a workflow --</option>
+      </select>
+      <button id="btn-load-workflow">Load</button>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="panel-section">
+      <label>Quick Actions</label>
+      <div class="quick-actions">
+        <button class="qa-btn" data-action="getState">Get Page State</button>
+        <button class="qa-btn" data-action="screenshot">Screenshot</button>
+      </div>
+    </section>
+
+    <!-- Status -->
+    <section class="panel-section">
+      <label>Status</label>
+      <div id="status-bar" class="status idle">Ready</div>
+    </section>
+
+    <!-- Log -->
+    <section class="panel-section log-section">
+      <label>Execution Log</label>
+      <div id="log-container">
+        <div id="log-output"></div>
+      </div>
+      <button id="btn-clear-log">Clear</button>
+    </section>
+  </div>
+
+  <!-- Sandbox area is handled by BrowserView in main process -->
+
+  <script src="app.js"></script>
+</body>
+</html>
