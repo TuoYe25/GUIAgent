@@ -1,0 +1,85 @@
+{
+  "workflows": [
+    {
+      "id": "click-first-link",
+      "name": "Click First Link",
+      "description": "Find and click the first link on the page",
+      "prompt": "Click the first link on the page",
+      "actions": [
+        { "type": "getState" },
+        { "type": "click", "target": "first_link" }
+      ],
+      "expectedResult": "Navigated to the linked page"
+    },
+    {
+      "id": "search-ai-news",
+      "name": "Search AI News",
+      "description": "Search for 'AI news' on the page and click the first result",
+      "prompt": "Search for 'AI news'",
+      "actions": [
+        { "type": "getState" },
+        { "type": "click", "target": "search_box" },
+        { "type": "type", "text": "AI news" },
+        { "type": "press", "key": "Enter" },
+        { "type": "wait", "ms": 2000 },
+        { "type": "getState" },
+        { "type": "click", "target": "first_result" }
+      ],
+      "expectedResult": "Landed on a page showing AI news content"
+    },
+    {
+      "id": "fill-contact-form",
+      "name": "Fill Contact Form",
+      "description": "Locate and fill a contact form on the page",
+      "prompt": "Fill the contact form with name 'John Doe' and email 'john@example.com'",
+      "actions": [
+        { "type": "getState" },
+        { "type": "click", "target": "name_field" },
+        { "type": "type", "text": "John Doe" },
+        { "type": "click", "target": "email_field" },
+        { "type": "type", "text": "john@example.com" },
+        { "type": "click", "target": "submit_button" }
+      ],
+      "expectedResult": "Form submitted successfully"
+    },
+    {
+      "id": "scroll-and-read",
+      "name": "Scroll & Read Content",
+      "description": "Scroll down the page to read more content",
+      "prompt": "Scroll down the page and capture the page state",
+      "actions": [
+        { "type": "getState" },
+        { "type": "scroll", "direction": "down", "amount": 500 },
+        { "type": "wait", "ms": 1000 },
+        { "type": "getState" }
+      ],
+      "expectedResult": "Page scrolled down, new elements visible"
+    },
+    {
+      "id": "login-flow",
+      "name": "Login Flow",
+      "description": "Navigate to a login page and attempt login (demo only, uses example credentials)",
+      "prompt": "Log in with username 'demo' and password 'demo123'",
+      "actions": [
+        { "type": "getState" },
+        { "type": "click", "target": "username_field" },
+        { "type": "type", "text": "demo" },
+        { "type": "click", "target": "password_field" },
+        { "type": "type", "text": "demo123" },
+        { "type": "click", "target": "login_button" },
+        { "type": "wait", "ms": 2000 }
+      ],
+      "expectedResult": "Logged in or appropriate error message"
+    },
+    {
+      "id": "extract-links",
+      "name": "Extract All Links",
+      "description": "Get the page state and list all interactive elements",
+      "prompt": "Show me all clickable elements on this page",
+      "actions": [
+        { "type": "getState" }
+      ],
+      "expectedResult": "List of all interactive elements with positions and selectors"
+    }
+  ]
+}

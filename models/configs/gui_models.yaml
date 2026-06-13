@@ -1,0 +1,153 @@
+# Edge GUI Agent — Model Configurations
+
+# UI-TARS (ByteDance)
+# https://github.com/bytedance/ui-tars
+
+ui-tars-1.5-7b:
+  model:
+    name: "UI-TARS-1.5-7B"
+    repo_id: "bytedance/UI-TARS-1.5-7B"
+    framework: transformers
+    approach: coordinate_based
+    parameters: "7B"
+    gpu_memory_gb: 8
+    recommended_backend: vllm
+  pipeline:
+    max_new_tokens: 256
+    temperature: 0.0
+    image_size: [1920, 1080]
+  supported_actions:
+    - click
+    - double_click
+    - right_click
+    - type
+    - scroll
+    - hover
+    - drag
+    - press
+
+ui-tars-1.5-2b:
+  model:
+    name: "UI-TARS-1.5-2B"
+    repo_id: "bytedance/UI-TARS-1.5-2B"
+    framework: transformers
+    approach: coordinate_based
+    parameters: "2B"
+    gpu_memory_gb: 4
+    recommended_backend: vllm
+
+ui-tars-7b-paper:
+  model:
+    name: "UI-TARS-7B-Paper"
+    repo_id: "bytedance/UI-TARS-7B"
+    framework: transformers
+    approach: coordinate_based
+    parameters: "7B"
+    gpu_memory_gb: 8
+
+# ShowUI (Microsoft)
+# https://github.com/showlab/ShowUI
+
+showui-2b:
+  model:
+    name: "ShowUI-2B"
+    repo_id: "showlab/ShowUI-2B"
+    framework: transformers
+    approach: coordinate_based
+    parameters: "2B"
+    gpu_memory_gb: 4
+
+# OS-ATLAS (CMU)
+# https://github.com/OS-Copilot/OS-ATLAS
+
+os-atlas-7b:
+  model:
+    name: "OS-ATLAS-7B"
+    repo_id: "OS-Copilot/OS-ATLAS-7B"
+    framework: transformers
+    approach: coordinate_based
+    parameters: "7B"
+    gpu_memory_gb: 8
+
+os-atlas-4b:
+  model:
+    name: "OS-ATLAS-4B"
+    repo_id: "OS-Copilot/OS-ATLAS-4B"
+    framework: transformers
+    approach: coordinate_based
+    parameters: "4B"
+    gpu_memory_gb: 6
+
+# Fara-7B (UI grounding)
+# https://github.com/fara-ai/Fara-7B
+
+fara-7b:
+  model:
+    name: "Fara-7B"
+    repo_id: "fara-ai/Fara-7B"
+    framework: transformers
+    approach: coordinate_based
+    parameters: "7B"
+    gpu_memory_gb: 8
+
+# SeeClick
+# https://github.com/njuccke/SeeClick
+
+seeclick:
+  model:
+    name: "SeeClick"
+    repo_id: "njuccke/SeeClick"
+    framework: transformers
+    approach: coordinate_based
+    parameters: "9.6B"
+    gpu_memory_gb: 12
+
+# Edge VLMs for Orchestrator
+
+phi3-vision:
+  model:
+    name: "Phi-3-Vision"
+    repo_id: "microsoft/Phi-3-vision-128k-instruct"
+    framework: transformers
+    approach: planner
+    parameters: "4.2B"
+    gpu_memory_gb: 6
+  pipeline:
+    max_new_tokens: 512
+    temperature: 0.0
+
+llava-1.6:
+  model:
+    name: "LLaVA-1.6"
+    repo_id: "llava-hf/llava-v1.6-mistral-7b-hf"
+    framework: transformers
+    approach: planner
+    parameters: "7B"
+    gpu_memory_gb: 8
+
+qwen2-vl-7b:
+  model:
+    name: "Qwen2-VL-7B"
+    repo_id: "Qwen/Qwen2-VL-7B-Instruct"
+    framework: transformers
+    approach: planner
+    parameters: "7B"
+    gpu_memory_gb: 8
+
+internvl2-4b:
+  model:
+    name: "InternVL2-4B"
+    repo_id: "OpenGVLab/InternVL2-4B"
+    framework: transformers
+    approach: planner
+    parameters: "4B"
+    gpu_memory_gb: 6
+
+minicpm-v-2.6:
+  model:
+    name: "MiniCPM-V-2.6"
+    repo_id: "openbmb/MiniCPM-V-2_6"
+    framework: transformers
+    approach: planner
+    parameters: "8B"
+    gpu_memory_gb: 10

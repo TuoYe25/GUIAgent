@@ -1,0 +1,41 @@
+{
+  "name": "edge-gui-agent-demo",
+  "version": "0.1.0",
+  "description": "Edge Device GUI Agent — Electron Sandbox Demo with BrowserWindow/BrowserView",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev --inspect",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "electron": "^30.5.1"
+  },
+  "devDependencies": {
+    "electron-builder": "^24.13.0"
+  },
+  "build": {
+    "appId": "com.edge.gui-agent-demo",
+    "productName": "Edge GUI Agent Demo",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*",
+      "gui_agent/**/*",
+      "workflows/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "renderer/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "renderer/icon.icns"
+    }
+  }
+}

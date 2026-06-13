@@ -1,0 +1,251 @@
+/* Edge GUI Agent Demo — Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --bg-panel: #0f3460;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --accent: #e94560;
+  --accent-hover: #ff6b81;
+  --success: #00c853;
+  --warn: #ffab00;
+  --error: #ff1744;
+  --border: #2a2a4a;
+  --radius: 6px;
+  --font-mono: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Control Panel */
+#control-panel {
+  width: 380px;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+header {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+header h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+header .subtitle {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Sections */
+.panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.panel-section label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* URL Bar */
+.url-bar {
+  display: flex;
+  gap: 4px;
+}
+
+.url-bar input {
+  flex: 1;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: var(--font-mono);
+}
+
+.url-bar input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Textarea */
+textarea {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  color: var(--text-primary);
+  font-size: 13px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Buttons */
+button {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 6px 12px;
+  color: var(--text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+button:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+button.primary:hover {
+  background: var(--accent-hover);
+}
+
+.button-row {
+  display: flex;
+  gap: 6px;
+}
+
+/* Quick Actions */
+.quick-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.qa-btn {
+  flex: 1;
+  font-size: 11px;
+  padding: 5px 8px;
+}
+
+/* Status */
+.status {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+}
+
+.status.idle { background: #1a3a1a; color: var(--success); }
+.status.running { background: #3a2a00; color: var(--warn); }
+.status.navigating { background: #1a1a3a; color: #448aff; }
+.status.error { background: #3a1a1a; color: var(--error); }
+
+/* Log */
+.log-section {
+  flex: 1;
+  min-height: 0;
+}
+
+#log-container {
+  flex: 1;
+  background: #0d0d1a;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+#log-output {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.log-entry {
+  padding: 2px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.log-time {
+  color: var(--text-secondary);
+  margin-right: 6px;
+}
+
+.log-info { color: var(--text-primary); }
+.log-success { color: var(--success); }
+.log-warn { color: var(--warn); }
+.log-error { color: var(--error); }
+.log-sandbox { color: #6c63ff; }
+
+/* Select */
+select {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  color: var(--text-primary);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
