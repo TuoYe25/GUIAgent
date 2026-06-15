@@ -52,8 +52,8 @@ const MODEL_REGISTRY = {
     api: 'openai-compat',
     endpoint: 'http://localhost:8000/v1/chat/completions',
     apiKey: 'not-needed',
-    model: 'ui-tars-7b',
-    enabled: false,
+    model: 'ui-tars-1.5-7b',
+    enabled: true,
     headers: {},
   },
   'showui-2b': {
@@ -63,7 +63,7 @@ const MODEL_REGISTRY = {
     endpoint: 'http://localhost:8000/v1/chat/completions',
     apiKey: 'not-needed',
     model: 'showui-2b',
-    enabled: false,
+    enabled: true,
     headers: {},
   },
   'os-atlas': {
@@ -72,8 +72,8 @@ const MODEL_REGISTRY = {
     api: 'openai-compat',
     endpoint: 'http://localhost:8000/v1/chat/completions',
     apiKey: 'not-needed',
-    model: 'os-atlas',
-    enabled: false,
+    model: 'os-atlas-7b',
+    enabled: true,
     headers: {},
   },
   'fara-7b': {
@@ -83,7 +83,7 @@ const MODEL_REGISTRY = {
     endpoint: 'http://localhost:8000/v1/chat/completions',
     apiKey: 'not-needed',
     model: 'fara-7b',
-    enabled: false,
+    enabled: true,
     headers: {},
   },
   'agentcpm-gui': {
