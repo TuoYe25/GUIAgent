@@ -27,7 +27,7 @@ from PIL import Image
 # ---------------------------------------------------------------------------
 
 DEFAULT_HF_REPO = "bytedance/UI-TARS-1.5-7B"
-DEFAULT_DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+DEFAULT_DEVICE = "cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu")
 
 
 class UITARSConfig:
@@ -290,11 +290,16 @@ class UITARSDeployer:
     ) -> None:
         """
         Deploy UI-TARS via vLLM OpenAI-compatible API server.
-
-        This starts a subprocess; use for production inference.
+        vLLM is Linux/NVIDIA only. This will fail on macOS/Windows.
         """
+        import platform
         import subprocess
         import sys
+
+        if platform.system() != "Linux":
+            logger.error("vLLM is only supported on Linux with NVIDIA GPU. "
+                         "Use deploy() for transformers-based inference instead.")
+            return
 
         cmd = [
             sys.executable, "-m", "vllm.entrypoints.openai.api_server",

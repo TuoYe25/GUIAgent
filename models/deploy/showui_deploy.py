@@ -26,7 +26,7 @@ from PIL import Image
 # ---------------------------------------------------------------------------
 
 DEFAULT_HF_REPO = "showlab/ShowUI-2B"
-DEFAULT_DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+DEFAULT_DEVICE = "cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu")
 
 
 # ---------------------------------------------------------------------------

@@ -117,16 +117,26 @@ class SystemMonitor:
                 snap.gpu_load = gpu.load * 100
                 snap.gpu_temp = gpu.temperature
 
-        # GPU via PyTorch
-        if HAS_TORCH and torch.cuda.is_available():
-            device_name = torch.cuda.get_device_name(0)
-            if not snap.gpu_name:
-                snap.gpu_name = device_name
-            mem_allocated = torch.cuda.memory_allocated(0) / (1024 ** 2)
-            mem_reserved = torch.cuda.memory_reserved(0) / (1024 ** 2)
-            total = torch.cuda.get_device_properties(0).total_memory / (1024 ** 2)
-            snap.gpu_memory_used_mb = max(snap.gpu_memory_used_mb, mem_allocated)
-            snap.gpu_memory_total_mb = max(snap.gpu_memory_total_mb, total)
+        # GPU via PyTorch (CUDA or MPS)
+        if HAS_TORCH:
+            if torch.cuda.is_available():
+                device_name = torch.cuda.get_device_name(0)
+                if not snap.gpu_name:
+                    snap.gpu_name = device_name
+                mem_allocated = torch.cuda.memory_allocated(0) / (1024 ** 2)
+                total = torch.cuda.get_device_properties(0).total_memory / (1024 ** 2)
+                snap.gpu_memory_used_mb = max(snap.gpu_memory_used_mb, mem_allocated)
+                snap.gpu_memory_total_mb = max(snap.gpu_memory_total_mb, total)
+            elif torch.backends.mps.is_available():
+                if not snap.gpu_name:
+                    snap.gpu_name = "Apple MPS"
+                if hasattr(torch.mps, "current_allocated_memory"):
+                    snap.gpu_memory_used_mb = max(snap.gpu_memory_used_mb,
+                        torch.mps.current_allocated_memory() / (1024 ** 2))
+                if hasattr(torch.mps, "recommended_max_memory"):
+                    snap.gpu_memory_total_mb = max(snap.gpu_memory_total_mb,
+                        torch.mps.recommended_max_memory() / (1024 ** 2))
+                snap.gpu_load = 0.0  # MPS doesn't expose load percentage
 
         return snap
 
@@ -186,8 +196,11 @@ class SystemMonitor:
             gpus = GPUtil.getGPUs()
             for gpu in gpus:
                 lines.append(f"GPU: {gpu.name} ({gpu.memoryTotal}MB VRAM)")
-        elif HAS_TORCH and torch.cuda.is_available():
-            lines.append(f"GPU: {torch.cuda.get_device_name(0)}")
-            total = torch.cuda.get_device_properties(0).total_memory / 1e9
-            lines.append(f"VRAM: {total:.1f} GB")
+        elif HAS_TORCH:
+            if torch.cuda.is_available():
+                lines.append(f"GPU: {torch.cuda.get_device_name(0)}")
+                total = torch.cuda.get_device_properties(0).total_memory / 1e9
+                lines.append(f"VRAM: {total:.1f} GB")
+            elif torch.backends.mps.is_available():
+                lines.append("GPU: Apple MPS (Metal Performance Shaders)")
         return "\n".join(lines)
