@@ -25,6 +25,10 @@ const state = {
 // Add new models here; the select in index.html is populated dynamically.
 // ---------------------------------------------------------------------------
 
+// Local model server endpoint — change to Mac Mini Tailscale IP if running remotely
+// Example: 'http://100.85.xxx.xxx:8000/v1/chat/completions'
+const LOCAL_MODEL_BASE = 'http://localhost:8000';
+
 const MODEL_REGISTRY = {
   'deepseek-v4': {
     label: 'LLM — DeepSeek v4',
@@ -50,7 +54,7 @@ const MODEL_REGISTRY = {
     label: 'VLM — UI-TARS-7B (local)',
     type: 'vision',
     api: 'openai-compat',
-    endpoint: 'http://localhost:8000/v1/chat/completions',
+    endpoint: `${LOCAL_MODEL_BASE}/v1/chat/completions`,
     apiKey: 'not-needed',
     model: 'ui-tars-1.5-7b',
     enabled: true,
@@ -60,7 +64,7 @@ const MODEL_REGISTRY = {
     label: 'VLM — ShowUI-2B (local)',
     type: 'vision',
     api: 'openai-compat',
-    endpoint: 'http://localhost:8000/v1/chat/completions',
+    endpoint: `${LOCAL_MODEL_BASE}/v1/chat/completions`,
     apiKey: 'not-needed',
     model: 'showui-2b',
     enabled: true,
@@ -70,7 +74,7 @@ const MODEL_REGISTRY = {
     label: 'VLM — OS-ATLAS (local)',
     type: 'vision',
     api: 'openai-compat',
-    endpoint: 'http://localhost:8000/v1/chat/completions',
+    endpoint: `${LOCAL_MODEL_BASE}/v1/chat/completions`,
     apiKey: 'not-needed',
     model: 'os-atlas-7b',
     enabled: true,
@@ -80,7 +84,7 @@ const MODEL_REGISTRY = {
     label: 'VLM — Fara-7B (local)',
     type: 'vision',
     api: 'openai-compat',
-    endpoint: 'http://localhost:8000/v1/chat/completions',
+    endpoint: `${LOCAL_MODEL_BASE}/v1/chat/completions`,
     apiKey: 'not-needed',
     model: 'fara-7b',
     enabled: true,
@@ -90,7 +94,7 @@ const MODEL_REGISTRY = {
     label: 'VLM — AgentCPM-GUI (local)',
     type: 'vision',
     api: 'openai-compat',
-    endpoint: 'http://localhost:8000/v1/chat/completions',
+    endpoint: `${LOCAL_MODEL_BASE}/v1/chat/completions`,
     apiKey: 'not-needed',
     model: 'agentcpm-gui',
     enabled: false,
