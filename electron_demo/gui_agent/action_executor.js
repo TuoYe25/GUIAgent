@@ -337,7 +337,7 @@ const { contextBridge } = require('electron');
   // ---------------------------------------------------------------------------
 
   const __guiAgent_execute = async function (action) {
-    console.log('[GUI Agent] __guiAgent_execute called with:', action);
+    console.log('[GUI Agent] __guiAgent_execute called with:', JSON.stringify(action));
     const { type, ...params } = action;
     const handler = actionHandlers[type];
 
@@ -347,7 +347,7 @@ const { contextBridge } = require('electron');
 
     try {
       const result = await handler(params);
-      console.log('[GUI Agent] Action result:', result);
+      console.log('[GUI Agent] Action result:', JSON.stringify(result));
       return result;
     } catch (error) {
       console.error('[GUI Agent] Action error:', error);

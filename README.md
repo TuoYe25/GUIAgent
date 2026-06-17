@@ -39,12 +39,12 @@ edge-gui-agent/
 
 | Module | Description |
 |--------|-------------|
-| **Model Deployment** | Deploy UI-TARS, ShowUI, OS-ATLAS via HuggingFace transformers or vLLM |
+| **Model Deployment** | Deploy UI-TARS, ShowUI, OS-ATLAS via transformers + FastAPI local server |
 | **Action Parsers** | Coordinate-based, DOM-based, accessibility-tree, and hybrid approaches |
 | **Benchmark Suite** | Compare model performance (success rate, latency, CPU/GPU/memory) |
 | **Competitor Comparison** | Head-to-head vs Playwright, Puppeteer, Selenium |
 | **VLM Integration** | Experiment with edge VLM orchestrator, hybrid, and preprocessor strategies |
-| **Electron Demo** | Sandboxed BrowserView with unified Model Registry — switch between text LLMs (DeepSeek v4), vision models (Qwen-VL-Max), local GUI models, or regex parser at runtime |
+| **Electron Demo** | Sandboxed BrowserView with unified Model Registry — switch between remote LLMs (DeepSeek v4), remote VLMs (Qwen-VL-Max), local GUI models (via FastAPI server), or regex parser at runtime |
 
 ## Quick Start
 
@@ -52,7 +52,7 @@ edge-gui-agent/
 
 - **Python**: ≥3.10
 - **Node.js**: ≥20 (for Electron demo)
-- **GPU**: NVIDIA GPU with ≥8GB VRAM (CUDA 12.1+) recommended; CPU-only fallback available
+- **GPU**: NVIDIA GPU with ≥8GB VRAM (CUDA 12.1+) recommended; CPU-only and Apple MPS fallback available
 - **OS**: Windows 10/11 or macOS 14+
 
 ### Installation
@@ -64,10 +64,21 @@ venv\Scripts\activate     # Windows
 source venv/bin/activate  # macOS / Linux
 
 pip install -e ".[dev]"
+pip install fastapi uvicorn loguru  # for local model server
+
+# macOS only: one-click setup
+bash scripts/setup_mac.sh
 
 # Electron demo
 cd electron_demo
 npm install
+```
+
+### Start Local Model Server
+
+```bash
+python scripts/serve_model.py --model ui-tars-1.5-7b --port 8000
+# Then open Electron demo and select the local model from the dropdown
 ```
 
 ### Run Benchmark
@@ -87,15 +98,19 @@ npm start
 
 The Electron demo uses a **Model Registry** (`renderer/app.js`) — a single config table where each model entry specifies endpoint, API key, model name, and type (`text` or `vision`). Switching models at runtime requires no code changes.
 
-| Model | Type | API | Status |
-|-------|------|-----|:------:|
-| DeepSeek v4 | Text | DMXAPI (cloud) | Enabled |
-| Qwen-VL-Max | Vision | DashScope (cloud) | Enabled |
-| UI-TARS-7B | Vision | vLLM / Ollama (local) | Self-host |
-| ShowUI-2B | Vision | vLLM / Ollama (local) | Self-host |
-| OS-ATLAS | Vision | vLLM / Ollama (local) | Self-host |
-| Fara-7B | Vision | vLLM / Ollama (local) | Self-host |
-| AgentCPM-GUI | Vision | vLLM / Ollama (local) | Self-host |
+For **local models**, start the FastAPI server first (`scripts/serve_model.py`), then select them in the demo. The serve_model.py script loads models via HuggingFace transformers and exposes an OpenAI-compatible API at `localhost:8000`.
+
+For **cross-machine setup** (e.g., Windows + Mac Mini via Tailscale): change `LOCAL_MODEL_BASE` in `app.js` to the remote machine's Tailscale IP.
+
+| Model | Type | Backend | Status |
+|-------|------|---------|:------:|
+| DeepSeek v4 | Text | Remote API (DMXAPI) | Enabled |
+| Qwen-VL-Max | Vision | Remote API (DashScope) | Enabled |
+| UI-TARS-1.5-7B | Vision | Local (FastAPI) | Enabled |
+| ShowUI-2B | Vision | Local (FastAPI) | Enabled |
+| OS-ATLAS-7B | Vision | Local (FastAPI) | Enabled |
+| Fara-7B | Vision | Local (FastAPI) | Enabled |
+| AgentCPM-GUI | Vision | Local (FastAPI) | Disabled — weights not public |
 
 ## Action Methods Compared
 

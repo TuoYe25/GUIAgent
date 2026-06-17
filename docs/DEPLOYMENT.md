@@ -53,39 +53,43 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-## Step 2: Deploy GUI Interaction Model
-
-### UI-TARS (ByteDance)
-```bash
-# Clone the official repo
-git clone https://github.com/bytedance/ui-tars.git
-cd ui-tars
-pip install ui-tars
-
-# Deploy with vLLM (recommended for speed)
-python -m models.ui_tars_deploy --backend vllm --port 8765
-
-# Or deploy with HuggingFace pipeline
-python -m models.ui_tars_deploy --backend hf --port 8765
-
-# Verify deployment
-curl http://localhost:8765/health
-```
-
-### Alternative Models
-See `models/configs/` for configuration files for ShowUI, OS-ATLAS, Fara-7B, etc.
-
-## Step 3: Edge VLM Orchestrator (Optional)
+## Step 2: Start Local Model Server
 
 ```bash
-# Deploy Phi-3-Vision as edge planner
-python -m scripts.deploy_edge_vlm --model phi3-vision --port 8766
+# Start the FastAPI server (first run downloads model weights from HuggingFace)
+python scripts/serve_model.py --model ui-tars-1.5-7b --port 8000
 
-# Or Qwen2-VL
-python -m scripts.deploy_edge_vlm --model qwen2-vl-7b --port 8766
+# Verify
+curl http://localhost:8000/health
+# → {"status":"ok","model":"ui-tars-1.5-7b"}
+
+# List models
+curl http://localhost:8000/v1/models
+# → {"object":"list","data":[{"id":"ui-tars-1.5-7b",...}]}
 ```
 
-## Step 4: Launch Electron Demo
+### Available Models
+
+| Model ID | Repo | Size |
+|----------|------|------|
+| `ui-tars-1.5-7b` | `bytedance/UI-TARS-1.5-7B` | ~14GB |
+| `showui-2b` | `showlab/ShowUI-2B` | ~4GB |
+| `os-atlas-7b` | `OS-Copilot/OS-ATLAS-7B` | ~14GB |
+| `fara-7b` | `fara-ai/Fara-7B` | ~14GB |
+
+### Cross-Machine Setup (e.g., Mac Mini inference, Windows UI)
+
+On the model server machine:
+```bash
+python scripts/serve_model.py --model ui-tars-1.5-7b --host 0.0.0.0 --port 8000
+```
+
+On the UI machine, edit `electron_demo/renderer/app.js`:
+```js
+const LOCAL_MODEL_BASE = 'http://<tailscale-ip>:8000';  // e.g. http://100.85.1.23:8000
+```
+
+## Step 3: Launch Electron Demo
 
 ```bash
 cd electron_demo
@@ -105,7 +109,7 @@ The Electron app will:
 2. Navigate to the target URL in a sandboxed BrowserView
 3. Accept prompts and execute GUI actions
 
-## Step 5: Run Benchmarks
+## Step 4: Run Benchmarks
 
 ```bash
 # Basic benchmark
@@ -125,10 +129,8 @@ python -m scripts.run_benchmarks --compare --plot
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `GUI_AGENT_MODEL_PATH` | auto | Path to GUI agent model weights |
-| `GUI_AGENT_BACKEND` | vllm | Model backend: vllm, hf, gradio |
-| `GUI_AGENT_PORT` | 8765 | WebSocket server port |
-| `EDGE_VLM_MODEL` | phi3-vision | Edge VLM for orchestrator |
-| `EDGE_VLM_PORT` | 8766 | Edge VLM server port |
+| `GUI_AGENT_SERVER_PORT` | 8000 | FastAPI model server port |
+| `LOCAL_MODEL_BASE` | localhost:8000 | Model server URL (change for cross-machine) |
 | `OPENAI_API_KEY` | — | For hybrid mode with OpenAI |
 | `ANTHROPIC_API_KEY` | — | For hybrid mode with Anthropic |
 | `GROQ_API_KEY` | — | For hybrid mode with Groq |
@@ -151,15 +153,18 @@ model:
 ## Troubleshooting
 
 ### CUDA Out of Memory
-- Reduce batch size in model config
-- Use `dtype: float16` instead of bfloat16
-- Disable vLLM and use HuggingFace pipeline
-- Try a smaller model (e.g., UI-TARS-1.5-2B)
+- Use CPU-only fallback: `python scripts/serve_model.py --model ui-tars-1.5-7b --port 8000` (auto-detects device)
+- Try a smaller model (ShowUI-2B or UI-TARS-2B)
+- Reduce `max_new_tokens` in the deploy config
 
-### WebSocket Connection Refused
-- Ensure Python backend is running: `curl http://localhost:8765/health`
-- Check port conflicts: `netstat -ano | findstr 8765`
-- Firewall may block localhost WebSocket — add exception
+### Model Server Connection Refused
+- Ensure the server is running: `curl http://localhost:8000/health`
+- Check port conflicts: `netstat -ano | findstr 8000` (Windows) or `lsof -i :8000` (macOS)
+- For cross-machine: verify Tailscale is connected and `LOCAL_MODEL_BASE` IP is correct
+
+### First Run Slow
+- First run downloads model weights from HuggingFace (~4-14GB), subsequent runs use cached weights
+- Set `HF_HOME` environment variable to control cache location
 
 ### Electron App Blank Screen
 - Check console for CSP errors

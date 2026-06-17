@@ -12,21 +12,13 @@ The benchmark framework evaluates GUI agent performance across multiple dimensio
 
 ## Quick Start
 
-### Install dependencies
 ```bash
-pip install -r benchmark/requirements.txt
+# Install dependencies
+pip install -r requirements.txt
 playwright install chromium
-```
 
-### Run a single benchmark
-```bash
-cd benchmark
-python runner.py --url https://example.com --task "Click the first link"
-```
-
-### Run comparison (multiple strategies)
-```bash
-python runner.py --compare --tasks tasks/sample_tasks.json
+# Run benchmark
+python scripts/run_benchmarks.py --models ui-tars-1.5-7b --methods coordinate dom a11y --runs 3
 ```
 
 ## Task Format

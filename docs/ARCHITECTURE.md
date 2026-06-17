@@ -16,49 +16,29 @@
 │         │           main.js (Electron)           │                │
 │         │   - Window/BrowserView management       │                │
 │         │   - IPC handlers                       │                │
-│         │   - Agent bridge (WS to Python BE)     │                │
+│         │   - HTTP API proxy to model server     │                │
 │         └──────────────────┬─────────────────────┘                │
 └─────────────────────────────┼──────────────────────────────────────┘
-                              │ WebSocket (ws://localhost:8765)
+                              │ HTTP (localhost:8000 or Tailscale IP)
 ┌─────────────────────────────┼──────────────────────────────────────┐
-│                   Python Backend                                    │
+│                   Model Server (FastAPI)                            │
 │         ┌───────────────────▼───────────────┐                      │
+│         │  scripts/serve_model.py            │                      │
+│         │  - OpenAI-compatible /v1 API       │                      │
+│         │  - Loads models via transformers   │                      │
+│         │  - UI-TARS / ShowUI / OS-ATLAS     │                      │
+│         └───────────────────────────────────┘                      │
+│                                                                     │
+│         ┌───────────────────────────────────┐                      │
 │         │         models/                    │                      │
 │         │  ┌───────────────────────────┐    │                      │
 │         │  │  ui_tars_deploy.py         │    │                      │
-│         │  │  (UI-TARS vLLM deploy,      │    │                      │
-│         │  │   HF pipeline, gradio)      │    │                      │
+│         │  │  showui_deploy.py          │    │                      │
+│         │  │  os_atlas_deploy.py        │    │                      │
 │         │  ├───────────────────────────┤    │                      │
 │         │  │  model_registry.py         │    │                      │
 │         │  │  (ModelConfig, registry)   │    │                      │
 │         │  └───────────────────────────┘    │                      │
-│         └─────────────────┬─────────────────┘                      │
-│                           │                                        │
-│         ┌─────────────────▼─────────────────┐                      │
-│         │       vlm_integration/             │                      │
-│         │  ┌─────────────┐ ┌──────────────┐ │                      │
-│         │  │ orchestrator │ │   hybrid     │ │                      │
-│         │  │(edge VLM     │ │(local+remote)│ │                      │
-│         │  │ planner/eval)│ │              │ │                      │
-│         │  ├─────────────┤ ├──────────────┤ │                      │
-│         │  │ preprocessor │ │  comparison   │ │                      │
-│         │  │(PII filter,  │ │(strategy bench│ │                      │
-│         │  │ DOM→structured│ │ & visualization│ │                      │
-│         │  ├──────────────┤ ├──────────────┤ │                      │
-│         │  │  privacy      │ │              │ │                      │
-│         │  │ (GDPR/HIPAA   │ │              │ │                      │
-│         │  │  compliance)  │ │              │ │                      │
-│         │  └──────────────┘ └──────────────┘ │                      │
-│         └─────────────────┬─────────────────┘                      │
-│                           │                                        │
-│         ┌─────────────────▼─────────────────┐                      │
-│         │        benchmark/                  │                      │
-│         │  ┌────────────┐ ┌───────────────┐ │                      │
-│         │  │  runner    │ │  competitors   │ │                      │
-│         │  │(Benchmark  │ │ puppeteer.py   │ │                      │
-│         │  │ Runner,    │ │ selenium.py    │ │                      │
-│         │  │ SystemMon) │ │ playwright.py  │ │                      │
-│         │  └────────────┘ └───────────────┘ │                      │
 │         └───────────────────────────────────┘                      │
 └────────────────────────────────────────────────────────────────────┘
 ```
@@ -98,11 +78,9 @@ Rapid prototype sandbox demo.
 ```
 User Prompt → Control Panel (renderer)
     → IPC → main.js
-        → WebSocket → Python Agent Backend
-            → VLM Planner (local or remote)
-            → GUI Model Predict (local)
-            → Action Executor (BrowserView sandbox)
-        ← WebSocket ← Result
+        → HTTP POST → FastAPI Model Server (localhost:8000 or Tailscale remote)
+            → GUI Model Predict (local transformers)
+        ← HTTP Response ← Server
     ← IPC ← Result
 ← Render (log, status)
 ```
@@ -121,7 +99,8 @@ User Prompt → Control Panel (renderer)
 ## Key Design Decisions
 
 1. **Electron BrowserView**: Isolates sandbox from control panel — same stack as real product
-2. **WebSocket protocol**: Enables local-only communication, zero network exposure
+2. **FastAPI model server**: OpenAI-compatible `/v1/chat/completions` — any client can call it; cross-machine via Tailscale
 3. **Model registry pattern**: Easy to add new models (ShowUI, OS-ATLAS, Fara-7B, etc.)
 4. **Privacy-first preprocessing**: Redact PII before any remote API call
 5. **Strategy abstraction**: Same benchmark can run local/hybrid/preprocess comparisons
+6. **macOS MPS support**: Automatic device fallback (cuda → mps → cpu) for Apple Silicon
